@@ -23,6 +23,7 @@ export const AppDataSource = new DataSource({
 });
 
 app.use(bodyParser.json());
+
 app.use(cors());
 
 AppDataSource.initialize()
