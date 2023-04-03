@@ -1,0 +1,13 @@
+###fetch all tasks
+GET http://localhost:5100/tasks
+
+###create new task
+POST http://localhost:5100/create
+Content-Type: application/json
+{
+    "title":"My First Task",
+    "description":"Simple testing",
+    "date":"2023-03-03",
+    "status":"todo",
+    "priority":"low"
+}
