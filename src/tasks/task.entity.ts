@@ -25,14 +25,14 @@ export class Task {
     @Column({
         type: 'enum',
         enum: Status,
-        default: Status.todo,
+        default: Status.Todo,
     })
     status: Status;
 
     @Column({
         type: 'enum',
         enum: Priority,
-        default: Priority.low,
+        default: Priority.Low,
     })
     priority: Priority;
 }
