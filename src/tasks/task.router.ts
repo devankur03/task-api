@@ -14,10 +14,13 @@ taskRouter.post(
     '/create',
     createValidator,
     async (req: Request, res: Response) => {
-        console.log(Object.keys(req.body), req.params, 'Test create');
-        const taskController = new TaskController();
-        const newTaskData = await taskController.addNewTask(req.body);
-        res.status(201).json(newTaskData);
+        try {
+            const taskController = new TaskController();
+            const newTaskData = await taskController.addNewTask(req.body);
+            res.status(201).json(newTaskData);
+        } catch (e) {
+            res.status(400).json({ msg: 'Something went wrong' });
+        }
     },
 );
 

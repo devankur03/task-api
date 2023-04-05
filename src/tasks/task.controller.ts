@@ -3,16 +3,41 @@ import { DeleteResult } from 'typeorm';
 import { AppDataSource } from '../..';
 import { Task } from './task.entity';
 
+// type statuTypes = {
+//     task_status: string;
+//     count: string;
+// };
+
 export class TaskController {
     constructor(private taskRepository = AppDataSource.getRepository(Task)) {}
 
-    public async getAllTasks(): Promise<Task[]> {
+    public async getAllTasks(): Promise<any> {
         let allTasks: Task[];
+        let statusObj: any = {};
 
         try {
+            const countInfo = await this.taskRepository
+                .createQueryBuilder('task')
+                .select('task.status')
+                .addSelect('COUNT(task.status)', 'count')
+                .groupBy('task.status')
+                .getRawMany();
+
+            console.log(countInfo);
+
             allTasks = await this.taskRepository.find();
             allTasks = instanceToPlain(allTasks) as Task[];
-            return allTasks;
+
+            if (countInfo.length) {
+                for (let item of countInfo) {
+                    statusObj[item.task_status] = item.count;
+                }
+            }
+
+            return {
+                statusCounts: statusObj,
+                tasks: allTasks,
+            };
         } catch (e) {
             console.log(e);
             throw new Error('Error');
@@ -33,6 +58,7 @@ export class TaskController {
             taskInfo = instanceToPlain(taskInfo) as Task;
             return taskInfo;
         } catch (e) {
+            console.log(e);
             throw new Error('Error ');
         }
     }
@@ -55,7 +81,7 @@ export class TaskController {
         const taskDetails: any = await this.taskRepository.findOneBy({
             id,
         });
-        console.log(taskDetails);
+
         if (taskDetails) {
             return await this.taskRepository.delete(id);
         } else {
